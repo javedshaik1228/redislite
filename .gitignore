@@ -36,3 +36,4 @@ bin
 build
 Makefile
 .vscode
+redislite.log
