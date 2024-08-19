@@ -17,11 +17,11 @@ make
 ## Run
 Start server:
 ```sh
-./bin/redislite_server
+./bin/redislite_server 8080
 ```
 Client:
 ```sh
-./bin/redislite_client
+./bin/redislite_client 127.0.0.1 8080
 ```
 
 ## Todo

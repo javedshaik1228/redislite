@@ -19,7 +19,7 @@
 namespace redislite
 {
 
-    Client::Client(const int iPort, const char *iSvrIP)
+    Client::Client(const int iPort, const std::string &iSvrIP)
     {
         // create socket
         _clientFd = socket(AF_INET, SOCK_STREAM, 0);
@@ -42,13 +42,13 @@ namespace redislite
         }
     }
 
-    void Client::connectToServer(int iPort, const char *iSvrIP)
+    void Client::connectToServer(int iPort, const std::string &iSvrIP)
     {
         sockaddr_in aServerAddr{};
         aServerAddr.sin_family = AF_INET;
         aServerAddr.sin_port = htons(iPort);
 
-        if (inet_pton(AF_INET, iSvrIP, &aServerAddr.sin_addr) <= 0)
+        if (inet_pton(AF_INET, iSvrIP.c_str(), &aServerAddr.sin_addr) <= 0)
         {
             throw InternalError("Invalid address/Address not supported");
         }
