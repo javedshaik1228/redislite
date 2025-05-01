@@ -1,11 +1,15 @@
+//////////////////////////////////////////////////////////////////////////
+// RedisLite - An In-Memory Database
+// Author: Javed Shaik
+// Description: A lightweight, in-memory key-value store similar to Redis.
+//////////////////////////////////////////////////////////////////////////
+
 #pragma once
 #include <string>
 
-namespace redislite
+namespace redislite::CmdConsts
 {
-    namespace CmdConsts
-    {
-        const std::string kSETCmd = "SET";
-        const std::string kGETCmd = "GET";
-    }
-}
+const std::string kSETCmd = "SET";
+const std::string kGETCmd = "GET";
+
+}  // namespace redislite::CmdConsts

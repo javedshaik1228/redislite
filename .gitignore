@@ -37,3 +37,7 @@ build
 Makefile
 .vscode
 redislite.log
+
+#clangd
+.cache/
+compile_commands.json

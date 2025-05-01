@@ -1,59 +1,63 @@
-#include <CmdHandler.hpp>
+//////////////////////////////////////////////////////////////////////////
+// RedisLite - An In-Memory Database
+// Author: Javed Shaik
+// Description: A lightweight, in-memory key-value store similar to Redis.
+//////////////////////////////////////////////////////////////////////////
 
 #include <CmdConsts.hpp>
-#include <utils/LoggerMacros.hpp>
-#include <exceptions/DataError.hpp>
-
+#include <CmdHandler.hpp>
 #include <data/StringStore.hpp>
+#include <exceptions/DataError.hpp>
+#include <utils/LoggerMacros.hpp>
 
 namespace redislite
 {
-    namespace CmdHandler
-    {
-        std::string processCommand(const std::string &iCommand)
-        {
-            try
-            {
-                std::istringstream iss(iCommand);
-                std::string cmd;
-                iss >> cmd;
+namespace CmdHandler
+{
+std::string processCommand(const std::string &iCommand)
+{
+	try
+	{
+		std::istringstream iss(iCommand);
+		std::string cmd;
+		iss >> cmd;
 
-                if (cmd == CmdConsts::kSETCmd)
-                {
-                    return handleSetString(iss);
-                }
-                if (cmd == redislite::CmdConsts::kGETCmd)
-                {
-                    return handleGetString(iss);
-                }
-                else
-                {
-                    return "-ERR unknown command \r\n";
-                }
-            }
-            catch (redislite::DataError &de)
-            {
-                LOG_CSL_ERR("Data error: " + std::string(de.what()));
-                return "$-1\r\n";
-            }
-        }
-
-        std::string handleSetString(std::istringstream &iCmdStream)
-        {
-            std::string aKey, aValue;
-            iCmdStream >> aKey >> aValue;
-            StringStore::getInstance()->put(aKey, aValue);
-            return "+OK\r\n";
-        }
-
-        std::string handleGetString(std::istringstream &iCmdStream)
-        {
-            std::string aKey, oValue;
-            iCmdStream >> aKey;
-            oValue = StringStore::getInstance()->get(aKey);
-            std::string response = "$" + std::to_string(oValue.size()) + "\r\n" + oValue + "\r\n";
-            return response;
-        }
-    }
-
+		if (cmd == CmdConsts::kSETCmd)
+		{
+			return handleSetString(iss);
+		}
+		if (cmd == redislite::CmdConsts::kGETCmd)
+		{
+			return handleGetString(iss);
+		}
+		else
+		{
+			return "-ERR unknown command \r\n";
+		}
+	}
+	catch (redislite::DataError &de)
+	{
+		LOG_CSL_ERR("Data error: " + std::string(de.what()));
+		return "$-1\r\n";
+	}
 }
+
+std::string handleSetString(std::istringstream &iCmdStream)
+{
+	std::string aKey, aValue;
+	iCmdStream >> aKey >> aValue;
+	StringStore::getInstance()->put(aKey, aValue);
+	return "+OK\r\n";
+}
+
+std::string handleGetString(std::istringstream &iCmdStream)
+{
+	std::string aKey, oValue;
+	iCmdStream >> aKey;
+	oValue = StringStore::getInstance()->get(aKey);
+	std::string response = "$" + std::to_string(oValue.size()) + "\r\n" + oValue + "\r\n";
+	return response;
+}
+}  // namespace CmdHandler
+
+}  // namespace redislite
