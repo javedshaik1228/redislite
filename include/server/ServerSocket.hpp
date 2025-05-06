@@ -6,25 +6,18 @@
 
 #pragma once
 
-#include <server/ServerSocket.hpp>
-#include <redislite/PollManager.hpp>
+#include <redislite/SocketHandler.hpp>
 
 namespace redislite
 {
 
-class Server
+class ServerSocket : public SocketHandler
 {
    public:
-	explicit Server(const int iPort);
-	void run();
-	~Server();
-
-   private:
-	ServerSocket _serverSocket;
-	PollManager _pollMgr;
-
-	void handleClient(int iClientFd);
-	void acceptNewClient();
+	ServerSocket();
+	void setReuseAddr();
+	void bindAndListen(int port, int backlog);
+	int acceptClient();
 };
 
 }  // namespace redislite

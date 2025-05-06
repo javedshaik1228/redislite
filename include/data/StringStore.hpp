@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <GenericSingleton.hpp>
+#include <redislite/GenericSingleton.hpp>
 #include <string>
 #include <unordered_map>
 

@@ -20,7 +20,7 @@ namespace ClientConfig
 {
 constexpr int BUFFER_SIZE = 1024;	 // max buffer size
 constexpr int CNX_WAIT_TIME = 2000;	 // in milli seconds
-constexpr int POLLTIMEOUT = -1;		 // time in ms that poll() should block waiting
+constexpr int POLLTIMEOUT = 500;	 // time in ms that poll() should block waiting
 									 // for a fd to become ready. -1 = inf timeout
 }  // namespace ClientConfig
 

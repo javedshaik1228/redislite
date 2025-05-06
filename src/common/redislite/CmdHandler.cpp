@@ -4,8 +4,9 @@
 // Description: A lightweight, in-memory key-value store similar to Redis.
 //////////////////////////////////////////////////////////////////////////
 
-#include <CmdConsts.hpp>
-#include <CmdHandler.hpp>
+#include <redislite/CmdHandler.hpp>
+#include <redislite/CmdConsts.hpp>
+
 #include <data/StringStore.hpp>
 #include <exceptions/DataError.hpp>
 #include <utils/LoggerMacros.hpp>

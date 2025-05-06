@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GenericSingleton.hpp>
+#include <redislite/GenericSingleton.hpp>
 #include <fstream>
 #include <sstream>
 

@@ -6,23 +6,26 @@
 
 #pragma once
 
+#include <sys/socket.h>
 #include <string>
-#include <client/ClientSocket.hpp>
-#include <redislite/PollManager.hpp>
 
 namespace redislite
 {
-class Client
+
+class SocketHandler
 {
    public:
-	explicit Client(const int iPort, const std::string &iSvrIP);
-	void run();
-	~Client() = default;
+	explicit SocketHandler(int domain = AF_INET, int type = SOCK_STREAM, int protocol = 0);
+	virtual ~SocketHandler();
 
-   private:
-	ClientSocket _clientSocket;
-	bool readData();
-	bool sendData();
-	PollManager _pollMgr;
+	void setNonBlocking();
+	int readData(char* buffer, int bufferSize);
+	int sendData(const std::string& data);
+	int getFd() const;
+	void closeSocket();
+
+   protected:
+	int _socketFd;
 };
+
 }  // namespace redislite

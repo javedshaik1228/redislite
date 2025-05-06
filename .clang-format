@@ -17,3 +17,6 @@ ColumnLimit: 120
 BreakBeforeBinaryOperators: None
 AllowShortFunctionsOnASingleLine: Empty
 PenaltyBreakBeforeFirstCallParameter: 0
+
+SortIncludes: false
+IncludeBlocks: Preserve

@@ -8,14 +8,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Common source files
 set(COMMON_SOURCES
     src/common/utils/Logger.cpp
+    src/common/redislite/SocketHandler.cpp
+    src/common/redislite/PollManager.cpp
 )
 
 # Add server executable
 add_executable(redislite_server
     src/server/main.cpp
     src/server/Server.cpp
+    src/server/ServerSocket.cpp
     src/data/StringStore.cpp
-    src/common/CmdHandler.cpp
+    src/common/redislite/CmdHandler.cpp
     ${COMMON_SOURCES}
 )
 
@@ -23,6 +26,7 @@ add_executable(redislite_server
 add_executable(redislite_client
     src/client/main.cpp
     src/client/Client.cpp
+    src/client/ClientSocket.cpp
     ${COMMON_SOURCES}
 )
 
