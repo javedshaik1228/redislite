@@ -1,0 +1,64 @@
+name: Coverity Scan (C++)
+
+on:
+  push:
+    branches: [ master ]
+  schedule:
+    - cron: '0 3 * * 0'   # weekly scan (Sunday 03:00 UTC)
+  workflow_dispatch:
+
+jobs:
+  coverity:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install build dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake build-essential
+
+    - name: Download Coverity Build Tool
+      run: |
+        wget https://scan.coverity.com/download/linux64 \
+          --post-data "token=${{ secrets.COVERITY_TOKEN }}&project=${{ secrets.COVERITY_PROJECT }}" \
+          -O coverity_tool.tgz
+        tar -xzf coverity_tool.tgz
+
+    - name: Configure with CMake
+      run: |
+        mkdir build
+        cd build
+        cmake ..
+
+    - name: Add Coverity to PATH
+      run: |
+        COV_DIR=$(ls -d cov-analysis-linux64*)
+        echo "$PWD/$COV_DIR/bin" >> $GITHUB_PATH
+
+    
+    - name: Verify cov-build
+      run: |
+        which cov-build
+
+    - name: Build with Coverity (capture)
+      run: |
+        cd build
+        cov-build --dir cov-int make -j$(nproc)
+
+    - name: Package Coverity results
+      run: |
+        cd build
+        tar -czf coverity-build.tgz cov-int
+
+    - name: Upload to Coverity Scan
+      run: |
+        cd build
+        curl --form token=${{ secrets.COVERITY_TOKEN }} \
+             --form email=${{ secrets.COVERITY_EMAIL }} \
+             --form file=@coverity-build.tgz \
+             --form version="${{ github.sha }}" \
+             --form description="RedisLite CMake build (server + client)" \
+             https://scan.coverity.com/builds?project=${{ secrets.COVERITY_PROJECT }}
