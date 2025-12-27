@@ -9,20 +9,21 @@
 #include <string>
 #include <client/ClientSocket.hpp>
 #include <redislite/PollManager.hpp>
+#include <memory>
 
 namespace redislite
 {
-class Client
-{
-   public:
-	explicit Client(const int iPort, const std::string &iSvrIP);
-	void run();
-	~Client() = default;
+	class Client
+	{
+	public:
+		explicit Client(const int iPort, const std::string& iSvrIP);
+		void run();
+		~Client() = default;
 
-   private:
-	ClientSocket _clientSocket;
-	bool readData();
-	bool sendData();
-	PollManager _pollMgr;
-};
+	private:
+		std::unique_ptr<ClientSocket> _clientSocket;
+		bool readData();
+		bool sendData();
+		PollManager _pollMgr;
+	};
 }  // namespace redislite

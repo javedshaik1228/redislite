@@ -7,17 +7,15 @@
 #pragma once
 
 #include <redislite/socket/PosixSocket.hpp>
+#include <memory>
 
 namespace redislite
 {
-
-	class ServerSocket : public PosixSocket
-	{
-	public:
-		explicit ServerSocket(int iSocketFd) : PosixSocket(iSocketFd) {};
-		void bindAndListen(int port, int backlog);
-		int acceptClient();
-		ServerSocket() = delete;
-	};
-
+    class SocketFdBuilder
+    {
+    public:
+        static int createSocketFd(int domain, int type, int protocol);
+    private:
+        static void setNonBlocking(int socketFd);
+    };
 }  // namespace redislite

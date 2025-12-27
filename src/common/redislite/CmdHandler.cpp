@@ -11,9 +11,7 @@
 #include <exceptions/DataError.hpp>
 #include <utils/LoggerMacros.hpp>
 
-namespace redislite
-{
-namespace CmdHandler
+namespace redislite::CmdHandler
 {
 std::string processCommand(const std::string &iCommand)
 {
@@ -27,7 +25,7 @@ std::string processCommand(const std::string &iCommand)
 		{
 			return handleSetString(iss);
 		}
-		if (cmd == redislite::CmdConsts::kGETCmd)
+		if (cmd == CmdConsts::kGETCmd)
 		{
 			return handleGetString(iss);
 		}
@@ -59,6 +57,5 @@ std::string handleGetString(std::istringstream &iCmdStream)
 	std::string response = "$" + std::to_string(oValue.size()) + "\r\n" + oValue + "\r\n";
 	return response;
 }
-}  // namespace CmdHandler
 
-}  // namespace redislite
+}  // namespace redislite::CmdHandler

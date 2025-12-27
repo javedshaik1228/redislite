@@ -8,7 +8,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Common source files
 set(COMMON_SOURCES
     src/common/utils/Logger.cpp
-    src/common/redislite/SocketHandler.cpp
+    src/common/redislite/socket/PosixSocket.cpp
+    src/common/redislite/socket/SocketFactory.cpp
+    src/common/redislite/socket/SocketFdBuilder.cpp
     src/common/redislite/PollManager.cpp
 )
 

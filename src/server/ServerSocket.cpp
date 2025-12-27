@@ -5,6 +5,8 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include <server/ServerSocket.hpp>
+#include <redislite/socket/SocketFdBuilder.hpp>
+
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <unistd.h>
@@ -14,52 +16,41 @@
 namespace redislite
 {
 
-ServerSocket::ServerSocket() : SocketHandler(AF_INET, SOCK_STREAM, 0) {}
-
-void ServerSocket::setReuseAddr()
-{
-	int opt = 1;
-	if (setsockopt(_socketFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
+	void ServerSocket::bindAndListen(int port, int backlog)
 	{
-		throw InternalError("setsockopt failed");
-	}
-}
+		sockaddr_in addr{};
+		addr.sin_family = AF_INET;
+		addr.sin_addr.s_addr = INADDR_ANY;
+		addr.sin_port = htons(port);
 
-void ServerSocket::bindAndListen(int port, int backlog)
-{
-	sockaddr_in addr{};
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = INADDR_ANY;
-	addr.sin_port = htons(port);
+		if (bind(_socketFd, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0)
+		{
+			throw InternalError("Bind failed");
+		}
 
-	if (bind(_socketFd, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0)
-	{
-		throw InternalError("Bind failed");
+		if (listen(_socketFd, backlog) < 0)
+		{
+			throw InternalError("Listen failed");
+		}
 	}
 
-	if (listen(_socketFd, backlog) < 0)
+	int ServerSocket::acceptClient()
 	{
-		throw InternalError("Listen failed");
-	}
-}
+		sockaddr_in clientAddr{};
+		socklen_t addrLen = sizeof(clientAddr);
 
-int ServerSocket::acceptClient()
-{
-	sockaddr_in clientAddr{};
-	socklen_t addrLen = sizeof(clientAddr);
+		int clientFd = accept(_socketFd, reinterpret_cast<sockaddr*>(&clientAddr), &addrLen);
+		if (clientFd < 0)
+		{
+			throw InternalError("Accept failed");
+		}
 
-	int clientFd = accept(_socketFd, reinterpret_cast<sockaddr*>(&clientAddr), &addrLen);
-	if (clientFd < 0)
-	{
-		throw InternalError("Accept failed");
+		char clientIP[INET_ADDRSTRLEN];
+		if (inet_ntop(AF_INET, &(clientAddr.sin_addr), clientIP, INET_ADDRSTRLEN) != nullptr)
+		{
+			LOG_CSL_MSG("Accepted connection from client IP: " << clientIP);
+		}
+		return clientFd;
 	}
-
-	char clientIP[INET_ADDRSTRLEN];
-	if (inet_ntop(AF_INET, &(clientAddr.sin_addr), clientIP, INET_ADDRSTRLEN) != nullptr)
-	{
-		LOG_CSL_MSG("Accepted connection from client IP: " << clientIP);
-	}
-	return clientFd;
-}
 
 }  // namespace redislite

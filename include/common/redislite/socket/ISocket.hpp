@@ -6,26 +6,17 @@
 
 #pragma once
 
-#include <sys/socket.h>
 #include <string>
 
 namespace redislite
 {
-
-class SocketHandler
-{
-   public:
-	explicit SocketHandler(int domain = AF_INET, int type = SOCK_STREAM, int protocol = 0);
-	virtual ~SocketHandler();
-
-	void setNonBlocking();
-	int readData(char* buffer, int bufferSize);
-	int sendData(const std::string& data);
-	int getFd() const;
-	void closeSocket();
-
-   protected:
-	int _socketFd;
-};
-
+    class ISocket
+    {
+    public:
+        virtual int readData(char* buffer, int bufferSize) = 0;
+        virtual int sendData(const std::string& data) = 0;
+        virtual int getFd() const = 0;
+        virtual void closeSocket() = 0;
+        virtual ~ISocket() = default;
+    };
 }  // namespace redislite
