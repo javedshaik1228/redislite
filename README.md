@@ -1,5 +1,8 @@
 # redislite
 
+test
+
+
 An in memory database built with C++
 
 ## Prerequisites
